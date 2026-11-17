@@ -1,10 +1,522 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  
-</head>
-<body>
-  <h1>Citrin is super cool and is my favorite teacher EVER!!!!!!!!!!!!!!!!!</h1>
-</body>
-  
-</html>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bernalie's CS Portfolio</title>
+    <!-- Tailwind CSS for clean, responsive styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Plus Jakarta Sans & Fira Code for a clean, modern CS aesthetic -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Phosphor Icons for crisp, clean UI icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        mono: ['"Fira Code"', 'monospace'],
+                    },
+                    colors: {
+                        lavender: {
+                            50: '#FAF8FF',
+                            100: '#F3EEFF',
+                            200: '#E5DBFF',
+                            300: '#D0BFFF',
+                            400: '#B197FC',
+                            500: '#9775FA',
+                            600: '#7950F2',
+                        },
+                        botanical: {
+                            50: '#F2FBF5',
+                            100: '#E1F7E8',
+                            200: '#C3EED1',
+                            300: '#94DFB0',
+                            400: '#5CC988',
+                            500: '#37B26C',
+                            600: '#279155',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
 
+    <style>
+        /* Smooth transitions between theme switches and filter states */
+        body {
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+        
+        .card-transition {
+            transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Subtle organic floating background shapes */
+        @keyframes floatSlow {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(15px, -15px) rotate(3deg); }
+        }
+        .animate-float-slow {
+            animation: floatSlow 12s ease-in-out infinite;
+        }
+
+        /* Custom scrollbar for a polished feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FAF8FF;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #D0BFFF;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9775FA;
+        }
+    </style>
+</head>
+<body class="bg-white text-slate-800 antialiased selection:bg-lavender-200 selection:text-lavender-600 min-h-screen flex flex-col">
+
+    <!-- =====================================================================
+         SAMPLE PICKER BAR (Top Control Panel to switch between 4 Designs)
+         Once you pick your favorite, we can remove this bar!
+         ===================================================================== -->
+    <div class="sticky top-0 z-50 bg-white/90 backdrop-blur-md border-b border-lavender-200 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <div class="flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-600">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-botanical-100 text-botanical-600">
+                    <i class="ph-bold ph-sparkle"></i>
+                </span>
+                <span>Portfolio Style Switcher:</span>
+            </div>
+            
+            <!-- 4 Sample Selector Buttons -->
+            <div class="flex flex-wrap justify-center gap-1.5 sm:gap-2" id="style-switcher">
+                <button onclick="setTheme('botanical')" id="btn-theme-botanical" class="theme-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    1. Botanical Breeze
+                </button>
+                <button onclick="setTheme('bento')" id="btn-theme-bento" class="theme-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    2. Lavender Bento
+                </button>
+                <button onclick="setTheme('studio')" id="btn-theme-studio" class="theme-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    3. Crisp Studio
+                </button>
+                <button onclick="setTheme('glass')" id="btn-theme-glass" class="theme-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer">
+                    4. Soft Glass
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decorative Ambient Background Blobs (Toggled/Styled dynamically by theme) -->
+    <div id="ambient-bg" class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-lavender-200/40 rounded-full blur-3xl animate-float-slow"></div>
+        <div class="absolute top-1/3 -right-24 w-96 h-96 bg-botanical-200/40 rounded-full blur-3xl animate-float-slow" style="animation-delay: -4s;"></div>
+        <div class="absolute -bottom-24 left-1/3 w-96 h-96 bg-lavender-100/50 rounded-full blur-3xl animate-float-slow" style="animation-delay: -8s;"></div>
+    </div>
+
+    <!-- =====================================================================
+         MAIN PORTFOLIO CONTAINER
+         ===================================================================== -->
+    <main id="portfolio-wrapper" class="flex-grow max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+        
+        <!-- HEADER SECTION -->
+        <header id="portfolio-header" class="mb-10 sm:mb-14 transition-all duration-300">
+            <!-- Dynamically populated based on selected theme sample -->
+        </header>
+
+        <!-- CATEGORY FILTER BUTTONS -->
+        <section aria-label="Project Categories" class="mb-8 sm:mb-10">
+            <div id="filter-container" class="flex flex-wrap items-center gap-2 sm:gap-3">
+                <!-- Filter buttons injected by JS -->
+            </div>
+        </section>
+
+        <!-- PROJECT GALLERY GRID -->
+        <section aria-label="Projects">
+            <div id="projects-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
+                <!-- Project cards injected by JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- SIMPLE FOOTER -->
+    <footer class="border-t border-slate-100 bg-white/60 backdrop-blur-sm py-8 mt-12">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-slate-500">
+            <p class="font-medium text-slate-600">Bernalie's CS Portfolio</p>
+            <p class="text-xs text-slate-400">Built for simulations, websites, games &amp; creative code</p>
+        </div>
+    </footer>
+
+    <!-- =====================================================================
+         PORTFOLIO LOGIC & DATA
+         ===================================================================== -->
+    <script>
+        // 1. PROJECT DATA
+        // Your first simulation is active at root: "sim1.html"
+        // Placeholder slots are included so you can see how the grid and filters work!
+        const projects = [
+            {
+                id: 'sim-1',
+                title: 'Simulation 01',
+                category: 'sims',
+                categoryLabel: 'Simulation',
+                url: 'sim1.html',
+                isPlaceholder: false,
+                description: 'My very first interactive computer science simulation built from scratch.',
+                tags: ['HTML5', 'JavaScript', 'Simulation'],
+                icon: 'ph-atom',
+                accent: 'lavender'
+            },
+            {
+                id: 'site-placeholder',
+                title: 'Upcoming Website',
+                category: 'sites',
+                categoryLabel: 'Website',
+                url: '#',
+                isPlaceholder: true,
+                description: 'Space reserved for my next clean and bright web design project.',
+                tags: ['Web Design', 'Coming Soon'],
+                icon: 'ph-globe-hemisphere-west',
+                accent: 'botanical'
+            },
+            {
+                id: 'game-placeholder',
+                title: 'Upcoming Game',
+                category: 'games',
+                categoryLabel: 'Game',
+                url: '#',
+                isPlaceholder: true,
+                description: 'Space reserved for a fun interactive browser game.',
+                tags: ['Game Dev', 'Coming Soon'],
+                icon: 'ph-game-controller',
+                accent: 'lavender'
+            },
+            {
+                id: 'other-placeholder',
+                title: 'Experimental Code',
+                category: 'other',
+                categoryLabel: 'Other',
+                url: '#',
+                isPlaceholder: true,
+                description: 'Creative coding experiments, algorithms, and handy mini-apps.',
+                tags: ['CS Lab', 'Coming Soon'],
+                icon: 'ph-code-block',
+                accent: 'botanical'
+            }
+        ];
+
+        // 2. CATEGORIES CONFIGURATION
+        const categories = [
+            { id: 'all', label: 'All', icon: 'ph-squares-four' },
+            { id: 'sims', label: 'Sims', icon: 'ph-atom' },
+            { id: 'sites', label: 'Sites', icon: 'ph-browser' },
+            { id: 'games', label: 'Games', icon: 'ph-game-controller' },
+            { id: 'other', label: 'Other', icon: 'ph-sparkle' }
+        ];
+
+        // Current Application State
+        let currentTheme = 'botanical'; // 'botanical' | 'bento' | 'studio' | 'glass'
+        let currentCategory = 'all';
+
+        // 3. THEME DEFINITIONS (4 Distinct Samples in Light Purple, Green & White)
+        const themes = {
+            botanical: {
+                name: 'Botanical Breeze',
+                bodyClass: 'bg-gradient-to-br from-white via-botanical-50/60 to-lavender-50/70 text-slate-800',
+                showBlobs: true,
+                headerHTML: `
+                    <div class="text-center max-w-2xl mx-auto">
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-botanical-100/80 text-botanical-600 text-xs font-bold tracking-wide uppercase mb-5 shadow-xs">
+                            <span class="w-2 h-2 rounded-full bg-botanical-500 animate-pulse"></span>
+                            Computer Science &amp; Creative Code
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 mb-4">
+                            Bernalie's <span class="text-transparent bg-clip-text bg-gradient-to-r from-lavender-600 to-botanical-500">CS Portfolio</span>
+                        </h1>
+                        <p class="text-base sm:text-lg text-slate-600 leading-relaxed">
+                            Welcome to my digital garden of interactive simulations, bright websites, browser games, and coding experiments.
+                        </p>
+                    </div>
+                `,
+                filterAlign: 'justify-center',
+                getFilterBtnClass: (isActive) => isActive
+                    ? 'bg-botanical-500 text-white shadow-md shadow-botanical-500/25 scale-105'
+                    : 'bg-white/90 text-slate-600 hover:bg-lavender-100 hover:text-lavender-600 border border-slate-200/80',
+                renderCard: (project) => `
+                    <a href="${project.url}" target="_blank" rel="noopener noreferrer" 
+                       class="group card-transition block bg-white rounded-3xl p-6 sm:p-7 border border-botanical-100 shadow-sm hover:shadow-xl hover:shadow-lavender-200/40 hover:-translate-y-1.5 flex flex-col justify-between h-full relative overflow-hidden">
+                        <!-- Top Soft Gradient Accent -->
+                        <div class="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r ${project.accent === 'lavender' ? 'from-lavender-400 to-lavender-200' : 'from-botanical-400 to-botanical-200'}"></div>
+                        
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <div class="w-12 h-12 rounded-2xl flex items-center justify-center text-2xl transition-transform group-hover:scale-110 ${project.accent === 'lavender' ? 'bg-lavender-100 text-lavender-600' : 'bg-botanical-100 text-botanical-600'}">
+                                    <i class="ph-duotone ${project.icon}"></i>
+                                </div>
+                                <span class="px-3 py-1 rounded-full text-xs font-bold ${project.accent === 'lavender' ? 'bg-lavender-50 text-lavender-600' : 'bg-botanical-50 text-botanical-600'}">
+                                    ${project.categoryLabel}
+                                </span>
+                            </div>
+                            
+                            <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-lavender-600 transition-colors flex items-center gap-2">
+                                ${project.title}
+                                ${project.isPlaceholder ? '<span class="text-[11px] font-semibold px-2 py-0.5 rounded-md bg-slate-100 text-slate-500">Slot</span>' : ''}
+                            </h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                                ${project.description}
+                            </p>
+                        </div>
+
+                        <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                            <div class="flex flex-wrap gap-1.5">
+                                ${project.tags.map(tag => `<span class="text-xs font-medium px-2.5 py-0.5 rounded-md bg-slate-50 text-slate-500">${tag}</span>`).join('')}
+                            </div>
+                            <span class="inline-flex items-center gap-1 text-sm font-bold text-botanical-600 group-hover:translate-x-1 transition-transform">
+                                Open <i class="ph-bold ph-arrow-up-right"></i>
+                            </span>
+                        </div>
+                    </a>
+                `
+            },
+
+            bento: {
+                name: 'Lavender Bento',
+                bodyClass: 'bg-lavender-50/70 text-slate-800',
+                showBlobs: false,
+                headerHTML: `
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+                        <div class="lg:col-span-2 bg-white rounded-3xl p-7 sm:p-10 border border-lavender-200/80 shadow-xs flex flex-col justify-center">
+                            <span class="inline-block w-fit px-3 py-1 rounded-xl bg-lavender-100 text-lavender-600 text-xs font-bold mb-4">
+                                👋 Hello &amp; Welcome
+                            </span>
+                            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 mb-3">
+                                Bernalie's CS Portfolio
+                            </h1>
+                            <p class="text-slate-600 text-base sm:text-lg max-w-xl">
+                                A clean collection of my simulations, websites, games, and coding projects. Click any card below to launch it in a new tab.
+                            </p>
+                        </div>
+                        <div class="bg-gradient-to-br from-lavender-400 to-botanical-400 rounded-3xl p-7 sm:p-8 text-white flex flex-col justify-between shadow-sm">
+                            <div class="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-2xl">
+                                <i class="ph-bold ph-rocket-launch"></i>
+                            </div>
+                            <div class="mt-6">
+                                <div class="text-3xl font-extrabold mb-1" id="bento-count">1 Active</div>
+                                <p class="text-white/90 text-sm font-medium">Featured: Simulation 01 (sim1.html)</p>
+                            </div>
+                        </div>
+                    </div>
+                `,
+                filterAlign: 'justify-start',
+                getFilterBtnClass: (isActive) => isActive
+                    ? 'bg-lavender-500 text-white shadow-sm'
+                    : 'bg-white text-slate-700 hover:bg-botanical-100 hover:text-botanical-600 border border-lavender-200/70',
+                renderCard: (project) => `
+                    <a href="${project.url}" target="_blank" rel="noopener noreferrer" 
+                       class="group card-transition block bg-white rounded-3xl p-6 border-2 ${project.isPlaceholder ? 'border-dashed border-lavender-200 opacity-85 hover:opacity-100' : 'border-lavender-200 hover:border-botanical-400'} shadow-xs hover:shadow-md flex flex-col justify-between h-full">
+                        <div>
+                            <div class="flex items-center justify-between mb-4">
+                                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-bold ${project.accent === 'lavender' ? 'bg-lavender-100 text-lavender-600' : 'bg-botanical-100 text-botanical-600'}">
+                                    <i class="ph-bold ${project.icon}"></i>
+                                    ${project.categoryLabel}
+                                </span>
+                                <div class="w-8 h-8 rounded-full bg-slate-50 group-hover:bg-botanical-500 group-hover:text-white flex items-center justify-center text-slate-400 transition-colors">
+                                    <i class="ph-bold ph-arrow-up-right"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">${project.title}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-5">${project.description}</p>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5">
+                            ${project.tags.map(tag => `<span class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-lavender-50 text-lavender-600">${tag}</span>`).join('')}
+                        </div>
+                    </a>
+                `
+            },
+
+            studio: {
+                name: 'Crisp Studio',
+                bodyClass: 'bg-white text-slate-900',
+                showBlobs: false,
+                headerHTML: `
+                    <div class="border-b-2 border-slate-100 pb-8 sm:pb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <div class="flex items-center gap-2 font-mono text-xs font-medium text-botanical-600 mb-3">
+                                <span class="px-2 py-0.5 rounded bg-botanical-50 border border-botanical-200">~/bernalie/portfolio</span>
+                                <span>•</span>
+                                <span class="text-lavender-600">v1.0</span>
+                            </div>
+                            <h1 class="text-4xl sm:text-5xl font-extrabold tracking-tight text-slate-900">
+                                Bernalie's CS Portfolio
+                            </h1>
+                        </div>
+                        <p class="text-slate-500 text-sm sm:text-base max-w-md">
+                            Minimalist index of simulations, websites, games, and software projects. All links open in a new tab.
+                        </p>
+                    </div>
+                `,
+                filterAlign: 'justify-start',
+                getFilterBtnClass: (isActive) => isActive
+                    ? 'bg-slate-900 text-white shadow-xs'
+                    : 'bg-slate-50 text-slate-600 hover:bg-lavender-100 hover:text-lavender-600 border border-slate-200',
+                renderCard: (project) => `
+                    <a href="${project.url}" target="_blank" rel="noopener noreferrer" 
+                       class="group card-transition block bg-white rounded-2xl p-6 border border-slate-200 hover:border-lavender-400 hover:ring-4 hover:ring-lavender-100/60 flex flex-col justify-between h-full">
+                        <div>
+                            <div class="flex items-center justify-between font-mono text-xs mb-4">
+                                <span class="text-botanical-600 font-semibold uppercase tracking-wider">${project.categoryLabel}</span>
+                                <span class="text-slate-400 group-hover:text-lavender-600 transition-colors">${project.url}</span>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 mb-2 group-hover:text-lavender-600 transition-colors">
+                                ${project.title}
+                            </h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-6">
+                                ${project.description}
+                            </p>
+                        </div>
+                        <div class="flex items-center justify-between pt-4 border-t border-slate-100">
+                            <div class="flex gap-2">
+                                ${project.tags.map(tag => `<span class="font-mono text-[11px] px-2 py-0.5 rounded bg-botanical-50 text-botanical-600">${tag}</span>`).join('')}
+                            </div>
+                            <span class="text-xs font-bold text-slate-900 group-hover:text-lavender-600 flex items-center gap-1">
+                                Launch <i class="ph-bold ph-arrow-up-right"></i>
+                            </span>
+                        </div>
+                    </a>
+                `
+            },
+
+            glass: {
+                name: 'Soft Glass',
+                bodyClass: 'bg-gradient-to-tr from-lavender-100 via-white to-botanical-100 text-slate-800',
+                showBlobs: true,
+                headerHTML: `
+                    <div class="bg-white/65 backdrop-blur-xl border border-white rounded-3xl p-8 sm:p-12 shadow-lg shadow-lavender-200/30 text-center max-w-3xl mx-auto">
+                        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 border border-lavender-200 text-lavender-600 text-xs font-bold mb-4 shadow-2xs">
+                            <i class="ph-fill ph-sparkle text-botanical-500"></i>
+                            Interactive Project Showcase
+                        </div>
+                        <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-4 tracking-tight">
+                            Bernalie's CS Portfolio
+                        </h1>
+                        <p class="text-slate-600 text-base sm:text-lg max-w-xl mx-auto">
+                            Explore my creative computer science work—filter by simulations, websites, games, and more.
+                        </p>
+                    </div>
+                `,
+                filterAlign: 'justify-center',
+                getFilterBtnClass: (isActive) => isActive
+                    ? 'bg-gradient-to-r from-lavender-500 to-botanical-500 text-white shadow-md'
+                    : 'bg-white/70 backdrop-blur-md text-slate-700 hover:bg-white border border-white shadow-2xs',
+                renderCard: (project) => `
+                    <a href="${project.url}" target="_blank" rel="noopener noreferrer" 
+                       class="group card-transition block bg-white/70 backdrop-blur-lg rounded-3xl p-6 sm:p-7 border border-white shadow-md shadow-lavender-200/20 hover:bg-white/95 hover:-translate-y-1.5 flex flex-col justify-between h-full">
+                        <div>
+                            <div class="flex items-center justify-between mb-5">
+                                <span class="px-3.5 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-lavender-100 to-botanical-100 text-slate-700">
+                                    ${project.categoryLabel}
+                                </span>
+                                <div class="w-10 h-10 rounded-2xl bg-white shadow-xs flex items-center justify-center text-xl text-lavender-600 group-hover:bg-botanical-500 group-hover:text-white transition-colors">
+                                    <i class="ph-bold ${project.icon}"></i>
+                                </div>
+                            </div>
+                            <h3 class="text-xl font-extrabold text-slate-900 mb-2">${project.title}</h3>
+                            <p class="text-sm text-slate-600 leading-relaxed mb-6">${project.description}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t border-white/80">
+                            <span class="text-xs font-semibold text-slate-500">${project.tags.join(' • ')}</span>
+                            <span class="inline-flex items-center gap-1 text-xs font-bold px-3 py-1.5 rounded-full bg-botanical-100 text-botanical-600 group-hover:bg-botanical-500 group-hover:text-white transition-colors">
+                                View <i class="ph-bold ph-arrow-up-right"></i>
+                            </span>
+                        </div>
+                    </a>
+                `
+            }
+        };
+
+        // 4. RENDER FUNCTIONS
+        function setTheme(themeKey) {
+            currentTheme = themeKey;
+            const theme = themes[themeKey];
+
+            // Update Body Classes
+            document.body.className = `${theme.bodyClass} antialiased selection:bg-lavender-200 selection:text-lavender-600 min-h-screen flex flex-col`;
+
+            // Toggle Ambient Background Blobs
+            const ambientBg = document.getElementById('ambient-bg');
+            ambientBg.style.display = theme.showBlobs ? 'block' : 'none';
+
+            // Update Top Switcher Active State
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.className = 'theme-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-slate-100 text-slate-600 hover:bg-lavender-100';
+            });
+            const activeBtn = document.getElementById(`btn-theme-${themeKey}`);
+            if (activeBtn) {
+                activeBtn.className = 'theme-btn px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold transition-all cursor-pointer bg-lavender-500 text-white shadow-xs';
+            }
+
+            // Render Header
+            document.getElementById('portfolio-header').innerHTML = theme.headerHTML;
+
+            // Re-render Filters & Cards to match new theme
+            renderFilters();
+            renderProjects();
+        }
+
+        function setCategory(categoryId) {
+            currentCategory = categoryId;
+            renderFilters();
+            renderProjects();
+        }
+
+        function renderFilters() {
+            const theme = themes[currentTheme];
+            const container = document.getElementById('filter-container');
+            container.className = `flex flex-wrap items-center gap-2 sm:gap-3 ${theme.filterAlign}`;
+
+            container.innerHTML = categories.map(cat => {
+                const isActive = currentCategory === cat.id;
+                const btnClasses = theme.getFilterBtnClass(isActive);
+                return `
+                    <button onclick="setCategory('${cat.id}')" 
+                            class="px-4 sm:px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-200 flex items-center gap-2 cursor-pointer ${btnClasses}">
+                        <i class="ph-bold ${cat.icon}"></i>
+                        <span>${cat.label}</span>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function renderProjects() {
+            const theme = themes[currentTheme];
+            const grid = document.getElementById('projects-grid');
+
+            const filtered = currentCategory === 'all'
+                ? projects
+                : projects.filter(p => p.category === currentCategory);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white/80 rounded-3xl border border-lavender-100">
+                        <p class="text-slate-500 font-medium">No projects in this category yet—check back soon!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(project => theme.renderCard(project)).join('');
+        }
+
+        // Initialize on Page Load
+        window.addEventListener('DOMContentLoaded', () => {
+            setTheme('botanical');
+        });
+    </script>
+</body>
+</html>
